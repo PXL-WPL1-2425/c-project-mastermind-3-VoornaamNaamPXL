@@ -1,0 +1,315 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace Mastermind
+{
+    public partial class MainWindow : Window
+    {
+        private readonly List<string> availableColors = new List<string> { "Rood", "Geel", "Oranje", "Wit", "Groen", "Blauw" };
+        private readonly List<string> secretCode = new List<string>();
+        private int attemptCount = 0;
+        private const int maxAttempts = 10;
+        private int totalScore = 0;
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            InitializeGame();
+        }
+
+        private void InitializeGame()
+        {
+
+            secretCode.Clear();
+            Random random = new Random();
+            for (int i = 0; i < 4; i++)
+            {
+                secretCode.Add(availableColors[random.Next(availableColors.Count)]);
+            }
+
+
+            this.Title = $"Mastermind - Code: {string.Join(", ", secretCode)}";
+
+
+            ComboBox1.ItemsSource = availableColors;
+            ComboBox2.ItemsSource = availableColors;
+            ComboBox3.ItemsSource = availableColors;
+            ComboBox4.ItemsSource = availableColors;
+
+
+            HistoryListBox.Items.Clear();
+            ScoreLabel.Content = "Score: 0";
+            attemptCount = 0;
+            totalScore = 0;
+        }
+
+        private void ComboBox1_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
+        private void ComboBox2_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
+        private void ComboBox3_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
+        private void ComboBox4_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
+
+        private void ValidateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (attemptCount >= maxAttempts)
+            {
+                MessageBox.Show($"Het spel is voorbij! De code was: {string.Join(", ", secretCode)}");
+                EndGame();
+                return;
+            }
+
+            attemptCount++;
+            CheckCode();
+            UpdateHistory();
+            UpdateScore();
+
+            if (attemptCount == maxAttempts)
+            {
+                MessageBox.Show($"Je hebt 10 pogingen gedaan. De code was: {string.Join(", ", secretCode)}");
+                EndGame();
+            }
+        }
+
+        private void CheckCode()
+        {
+            List<string> userCode = new List<string>
+            {
+                ComboBox1.SelectedItem?.ToString(),
+                ComboBox2.SelectedItem?.ToString(),
+                ComboBox3.SelectedItem?.ToString(),
+                ComboBox4.SelectedItem?.ToString()
+            };
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (userCode[i] == null)
+                {
+                    continue;
+                }
+
+                if (userCode[i] == secretCode[i])
+                {
+
+                }
+                else if (secretCode.Contains(userCode[i]))
+                {
+
+                }
+            }
+        }
+
+        private void UpdateHistory()
+        {
+            List<string> userCode = new List<string>
+            {
+                ComboBox1.SelectedItem?.ToString() ?? "Geel", "Groen", "Rood","Oranje", "blauw", "wit",
+                ComboBox2.SelectedItem?.ToString() ?? "Geel", "Groen", "Rood","Oranje", "blauw", "wit",
+                ComboBox3.SelectedItem?.ToString() ?? "Geel", "Groen", "Rood","Oranje", "blauw", "wit",
+                ComboBox4.SelectedItem?.ToString() ?? "Geel", "Groen", "Rood","Oranje", "blauw", "wit",
+               
+            };
+
+            string feedback = $"Poging {attemptCount}: {string.Join(", ", userCode)} | Feedback: {GenerateFeedback(userCode)}";
+            HistoryListBox.Items.Add(feedback);
+        }
+
+        private string GenerateFeedback(List<string> userCode)
+        {
+            int correctPlace = 0;
+            int wrongPlace = 0;
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (userCode[i] == secretCode[i])
+                {
+                    correctPlace++;
+                }
+                else if (secretCode.Contains(userCode[i]))
+                {
+                    wrongPlace++;
+                }
+            }
+            return $"{correctPlace} correct, {wrongPlace} verkeerd";
+        }
+
+        private void UpdateScore()
+        {
+            List<string> userCode = new List<string>
+            {
+                ComboBox1.SelectedItem?.ToString(),
+                ComboBox2.SelectedItem?.ToString(),
+                ComboBox3.SelectedItem?.ToString(),
+                ComboBox4.SelectedItem?.ToString()
+            };
+
+            int roundScore = 0;
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (userCode[i] == secretCode[i])
+                {
+                    roundScore += 0;
+                }
+                else if (secretCode.Contains(userCode[i]))
+                {
+                    roundScore += 1;
+                }
+                else
+                {
+                    roundScore += 2;
+                }
+            }
+
+            totalScore += roundScore;
+            ScoreLabel.Content = $"Score: {totalScore}";
+        }
+
+        private void EndGame()
+        {
+            if (MessageBox.Show("Wil je opnieuw spelen?", "Spel voltooid", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                ResetGame();
+            }
+            else
+            {
+                Application.Current.Shutdown();
+            }
+        }
+
+        private void ResetGame()
+        {
+            attemptCount = 0;
+            totalScore = 0;
+            secretCode.Clear();
+            HistoryListBox.Items.Clear();
+            ScoreLabel.Content = "Score: 0";
+            InitializeGame();
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            if (MessageBox.Show("Wil je echt afsluiten?",))
+
+            { 
+                bool Ja = false;
+                bool Nee = true;
+
+                for (; Ja;)
+                {
+                    MessageBox.Show("Het spel wordt afgesloten.");
+                    Ja = false;
+                }
+
+                for (; Nee;) 
+                {
+                    MessageBox.Show("Het spel wordt niet afgesloten.");
+                }                
+            }
+            else 
+            {
+                e.Cancel = true;
+                bool Nee = true;
+                bool Ja = false;
+
+                for (; Nee;) 
+                {
+                    MessageBox.Show("Het spel wordt niet afgesloten.");
+                }
+
+                for (; Ja;) 
+                {
+                    MessageBox.Show("Het spel wordt afgesloten");
+                }
+            }
+        }
+
+        static void ExtraSpeler()
+        {
+            List<string> extraspeler = new List<string>();
+            bool doorgaan = true;
+
+            while (doorgaan)
+            {
+                MessageBox.Show("voer de naam van de speler in");
+                string naam = Console.ReadLine();
+                extraspeler.Add(naam);
+
+                MessageBox.Show("wil je nog een speler toevoegen");
+                string antwoord = Console.ReadLine().ToLower();
+
+                if (antwoord == "nee")
+                {
+                    doorgaan = false;
+                }
+            }
+            Console.WriteLine("\nSpelers:");
+            foreach (string s in extraspeler) 
+            {
+                Console.WriteLine(extraspeler);           
+            }
+        }
+        static void HuidigeSpelers()
+        {
+            List<string> spelers = new List<string>() { "Ahmed", "Piet", "Senne", "Suyen" };
+            int HuidigeSpelerIndex = 0;
+
+            string HuidigeSpeler = spelers[HuidigeSpelerIndex];
+            string VolgendeSpeler = spelers[(HuidigeSpelerIndex + 1) % spelers.Count];
+
+            string beurt = $"Nu is {HuidigeSpeler} aan de beurt";
+            string eindiging = $"De beurt van {HuidigeSpeler} is voorbij";
+            Console.WriteLine($"beurt: {beurt}");
+            Console.WriteLine($"Beindigt: {eindiging}");
+
+            HuidigeSpelerIndex = (HuidigeSpelerIndex + 1) % spelers.Count;
+        }
+        public static class SpelerInfoUpdater 
+        {
+            public static void UpdateSpelerInformation(Label spelerInfoLabel, string spelerNaam, int pogingen, int score) 
+            {
+                spelerInfoLabel.Content = $"Speler: {spelerNaam} | Pogingen: {pogingen} | score: {score}";
+            }
+            
+        }
+        Label spelerInfoLabel = new Label();
+        string HuidigeSpeler = "Ahmed";
+        int aantalPogingen = 10;
+        int score = 250;
+        
+        public void KoopEenHint(ref int score) 
+        {
+            var result = MessageBox.Show("Wil je een hint?\n" +
+                                        "klik 'Ja' voor juiste kleur (-15 punten). \n " +
+                                         "klik 'Nee' voor een juiste kleur op de juiste plaats (-25 punten)",
+                                         "hint kopen",
+                                         MessageBoxButton.YesNoCancel,
+                                         MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes) 
+            {                
+                score -= 15;
+                MessageBox.Show("je hebt een hint gekocht: een juiste kleur, strafpunten -15", "hint geacepteerd");            
+            }
+            else if (result == MessageBoxResult.No) 
+            {
+                score -= 25;
+                MessageBox.Show("je hebt een hint gekocht: een juiste kleur op de juiste plaats, strafpunten -25", "hint geacepteerd");
+            }
+            else 
+            {                
+                MessageBox.Show("je hebt geen hint gekocht.", "hint geweigerd");
+            }
+        }
+    }
+}
