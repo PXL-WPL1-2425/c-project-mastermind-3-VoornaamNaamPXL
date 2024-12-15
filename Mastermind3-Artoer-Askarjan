@@ -114,10 +114,10 @@ namespace Mastermind
         {
             List<string> userCode = new List<string>
             {
-                ComboBox1.SelectedItem?.ToString() ?? "Geel", "Groen", "Rood","Oranje", "blauw",
-                ComboBox2.SelectedItem?.ToString() ?? "Geel", "Groen", "Rood","Oranje", "blauw",
-                ComboBox3.SelectedItem?.ToString() ?? "Geel", "Groen", "Rood","Oranje", "blauw",
-                ComboBox4.SelectedItem?.ToString() ?? "Geel", "Groen", "Rood","Oranje", "blauw",
+                ComboBox1.SelectedItem?.ToString() ?? "Geel", "Groen", "Rood","Oranje", "blauw", "wit",
+                ComboBox2.SelectedItem?.ToString() ?? "Geel", "Groen", "Rood","Oranje", "blauw", "wit",
+                ComboBox3.SelectedItem?.ToString() ?? "Geel", "Groen", "Rood","Oranje", "blauw", "wit",
+                ComboBox4.SelectedItem?.ToString() ?? "Geel", "Groen", "Rood","Oranje", "blauw", "wit",
                
             };
 
@@ -259,6 +259,21 @@ namespace Mastermind
             {
                 Console.WriteLine(extraspeler);           
             }
+        }
+        static void HuidigeSpelers()
+        {
+            List<string> spelers = new List<string>() {"Ahmed","Piet","Senne","Suyen"};
+            int HuidigeSpelerIndex = 0;
+
+            string HuidigeSpeler = spelers[HuidigeSpelerIndex];
+            string VolgendeSpeler = spelers[(HuidigeSpelerIndex + 1) % spelers.Count];
+
+            string beurt = $"Nu is {HuidigeSpeler} aan de beurt";
+            string eindiging = $"De beurt van {HuidigeSpeler} is voorbij";
+            Console.WriteLine($"beurt: {beurt}");
+            Console.WriteLine($"Beindigt: {eindiging}");
+
+            HuidigeSpelerIndex = (HuidigeSpelerIndex + 1) %spelers.Count;
         }
 
     }
